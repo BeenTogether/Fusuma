@@ -29,7 +29,7 @@ fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
     }
 }
 
-public protocol FusumaDelegate: class {
+@objc public protocol FusumaDelegate: class {
     func fusumaImageSelected(_ image: UIImage, source: FusumaMode)
     func fusumaMultipleImageSelected(_ images: [UIImage], source: FusumaMode)
     func fusumaVideoCompleted(withFileURL fileURL: URL)
@@ -87,7 +87,7 @@ public var autoDismiss: Bool = true
     }
 }
 
-public struct ImageMetadata {
+@objc public class ImageMetadata : NSObject {
     public let mediaType: PHAssetMediaType
     public let pixelWidth: Int
     public let pixelHeight: Int
@@ -98,6 +98,18 @@ public struct ImageMetadata {
     public let isFavourite: Bool
     public let isHidden: Bool
     public let asset: PHAsset
+    init(mediaType: PHAssetMediaType, pixelWidth: Int, pixelHeight: Int, creationDate: Date?, modificationDate: Date?, location: CLLocation?, duration: TimeInterval, isFavourite: Bool, isHidden: Bool, asset: PHAsset) {
+        self.mediaType = mediaType
+        self.pixelWidth = pixelWidth
+        self.pixelHeight = pixelHeight
+        self.creationDate = creationDate
+        self.modificationDate = modificationDate
+        self.location = location
+        self.duration = duration
+        self.isFavourite = isFavourite
+        self.isHidden = isHidden
+        self.asset = asset
+    }
 }
 
 @objc public class FusumaViewController: UIViewController {
@@ -132,7 +144,7 @@ public struct ImageMetadata {
         return PHPhotoLibrary.authorizationStatus() == .authorized
     }
 
-    public weak var delegate: FusumaDelegate? = nil
+    @objc public weak var delegate: FusumaDelegate? = nil
 
     override public func loadView() {
         if let view = UINib(nibName: "FusumaViewController", bundle: Bundle(for: self.classForCoder)).instantiate(withOwner: self, options: nil).first as? UIView {
@@ -532,20 +544,20 @@ private extension FusumaViewController {
         case .library:
             titleLabel.text = NSLocalizedString(fusumaCameraRollTitle, comment: fusumaCameraRollTitle)
             highlightButton(libraryButton)
-            view.bringSubviewToFront(photoLibraryViewerContainer)
+            view.bringSubview(toFront: photoLibraryViewerContainer)
         case .camera:
             titleLabel.text = NSLocalizedString(fusumaCameraTitle, comment: fusumaCameraTitle)
             highlightButton(cameraButton)
-            view.bringSubviewToFront(cameraShotContainer)
+            view.bringSubview(toFront: cameraShotContainer)
             cameraView.startCamera()
         case .video:
             titleLabel.text = NSLocalizedString(fusumaVideoTitle, comment: fusumaVideoTitle)
             highlightButton(videoButton)
-            view.bringSubviewToFront(videoShotContainer)
+            view.bringSubview(toFront: videoShotContainer)
             videoView.startCamera()
         }
 
-        view.bringSubviewToFront(menuView)
+        view.bringSubview(toFront: menuView)
     }
 
     func updateDoneButtonVisibility() {
