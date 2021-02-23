@@ -344,11 +344,13 @@ final class FSAlbumView: UIView, UICollectionViewDataSource, UICollectionViewDel
                     if let insertedIndexes = collectionChanges.insertedIndexes, insertedIndexes.count != 0 {
                         collectionView.insertItems(at: insertedIndexes.aapl_indexPathsFromIndexesWithSection(0))
                     }
-
-                    if let changedIndexes = collectionChanges.changedIndexes, changedIndexes.count != 0 {
-                        collectionView.reloadItems(at: changedIndexes.aapl_indexPathsFromIndexesWithSection(0))
+                }, completion: { finished in
+                    if finished {
+                        if let changedIndexes = collectionChanges.changedIndexes, changedIndexes.count != 0 {
+                            collectionView.reloadItems(at: changedIndexes.aapl_indexPathsFromIndexesWithSection(0))
+                        }
                     }
-                }, completion: nil)
+                })
             }
 
             self.resetCachedAssets()
